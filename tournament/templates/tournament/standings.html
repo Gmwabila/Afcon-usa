@@ -1,4 +1,4 @@
-{% load static %}
+{% load static country_flags %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -301,16 +301,11 @@
                                         <tr>
                                             <th scope="row" class="team-column">
                                                 <span class="team-name">
-                                                    {% with team=row.team|lower|cut:"." %}
-                                                        <span class="flag" aria-hidden="true">
-                                                            {% if team == "dr congo" %}🇨🇩
-                                                            {% elif team == "ghana" %}🇬🇭
-                                                            {% elif team == "senegal" or team == "senegale" %}🇸🇳
-                                                            {% elif team == "south sudan" %}🇸🇸
-                                                            {% elif team == "sudan" %}🇸🇩
-                                                            {% elif team == "burundi" %}🇧🇮
-                                                            {% elif team == "kenya" %}🇰🇪
+                                                    {% with flag=row.team|country_flag %}
+                                                            {% if flag %}
+                                                                <span class="flag" aria-hidden="true">{{ flag }}</span>
                                                             {% endif %}
+                                                        {% endwith %}
                                                         </span>
                                                     {% endwith %}
                                                     <span>{{ row.team }}</span>
