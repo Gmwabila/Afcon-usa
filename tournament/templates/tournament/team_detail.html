@@ -1,0 +1,23 @@
+{% extends "tournament/fixtures.html" %}
+
+{% block title %}{{ team.name }} | AFCON USA{% endblock %}
+{% block page_heading %}{{ team.name }}{% endblock %}
+
+{% block content %}
+    <section class="group">
+        {% if team.group %}
+            <p class="legend">{{ team.group.name }}</p>
+        {% endif %}
+
+        <h2>Roster</h2>
+        <ul>
+            {% for player in players %}
+                <li>{{ player.name }}</li>
+            {% empty %}
+                <li>No players have been added yet.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {{ block.super }}
+{% endblock %}

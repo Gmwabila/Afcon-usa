@@ -1,0 +1,353 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Group Standings | AFCON USA{% endblock %}</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --background: #071511;
+            --header-green: #123b2b;
+            --row-green: #174432;
+            --row-green-alt: #103426;
+            --points-green: #1b4835;
+            --field-green: #287f57;
+            --gold: #ffc440;
+            --cream: #fff4db;
+            --muted: #cbd9ce;
+            --rule: #ffc44066;
+            --display-font: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100svh;
+            margin: 0;
+            border-block: 7px solid var(--gold);
+            background: radial-gradient(
+                ellipse 75% 38rem at 50% 0,
+                var(--header-green),
+                var(--background)
+            );
+            color: var(--cream);
+            font: 1rem/1.5 system-ui, sans-serif;
+        }
+
+        .shell {
+            width: min(64rem, calc(100% - 2rem));
+            margin-inline: auto;
+        }
+
+        .masthead {
+            padding: clamp(1.75rem, 5vw, 3.5rem) 0 1.5rem;
+            border-bottom: 1px solid var(--rule);
+            text-align: center;
+        }
+
+        .trophy {
+            position: relative;
+            width: 6rem;
+            height: 8.75rem;
+            overflow: hidden;
+            margin: 0 auto .55rem;
+            mix-blend-mode: screen;
+        }
+
+        .trophy img {
+            position: absolute;
+            top: -1.05rem;
+            left: 50%;
+            width: 14.5rem;
+            max-width: none;
+            transform: translateX(-50%);
+        }
+
+        h1, h2, p { margin: 0; }
+
+        .brand {
+            margin-bottom: .4rem;
+            color: var(--gold);
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        h1 {
+            font: 800 clamp(2rem, 7vw, 5rem)/1 var(--display-font);
+            letter-spacing: -.025em;
+            text-transform: uppercase;
+        }
+
+        main {
+            flex: 1;
+            padding-block: 1.5rem 3rem;
+        }
+
+        .group-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .group-links a {
+            padding: .35rem .75rem;
+            border: 1px solid var(--field-green);
+            border-radius: 4px;
+            color: var(--cream);
+            text-decoration: none;
+        }
+
+        .group-links a:hover { background: var(--row-green); }
+        .group + .group { margin-top: 1.75rem; }
+
+        .group h2 {
+            margin-bottom: .55rem;
+            font: 700 1.35rem/1.2 var(--display-font);
+        }
+
+        .table-wrap { overflow-x: auto; }
+
+        .table-wrap:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        th, td {
+            padding: .85rem clamp(.3rem, 1.4vw, 1rem);
+            text-align: center;
+        }
+
+        thead th {
+            background: var(--gold);
+            color: var(--background);
+            font: 800 clamp(.72rem, 2.2vw, 1.15rem)/1 var(--display-font);
+            text-transform: uppercase;
+        }
+
+        .team-column {
+            width: 50%;
+            text-align: left;
+        }
+
+        tbody tr { background: var(--row-green); }
+        tbody tr:nth-child(even) { background: var(--row-green-alt); }
+
+        tbody th, tbody td {
+            border-bottom: 1px solid var(--background);
+            font-size: clamp(.8rem, 2vw, 1.25rem);
+            font-weight: 650;
+        }
+
+        .team-name {
+            display: flex;
+            align-items: center;
+            gap: clamp(.35rem, 1.4vw, .85rem);
+        }
+
+        .flag {
+            flex: 0 0 auto;
+            font-size: clamp(1rem, 3vw, 1.65rem);
+            line-height: 1;
+        }
+
+        td.points {
+            background: var(--points-green);
+            color: var(--gold);
+            font-weight: 850;
+        }
+
+        .legend, .empty {
+            margin-top: .8rem;
+            color: var(--muted);
+            font-size: .83rem;
+        }
+
+        footer {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            padding: 2rem 1rem 4rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .5rem 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--rule);
+            font-size: .82rem;
+        }
+
+        .footer-links a {
+            color: var(--cream);
+            text-underline-offset: .2em;
+        }
+
+        .pitch-corner {
+            position: absolute;
+            bottom: -1px;
+            z-index: -1;
+            width: clamp(4rem, 12vw, 9rem);
+            height: clamp(2.5rem, 6vw, 4.5rem);
+            border-top: 2px solid var(--field-green);
+            opacity: .65;
+            pointer-events: none;
+        }
+
+        .pitch-corner--left {
+            left: 0;
+            border-right: 2px solid var(--field-green);
+            border-top-right-radius: 100%;
+        }
+
+        .pitch-corner--right {
+            right: 0;
+            border-left: 2px solid var(--field-green);
+            border-top-left-radius: 100%;
+        }
+
+        @media (max-width: 420px) {
+            th, td { padding-block: .7rem; }
+            .team-column { width: 42%; }
+        }
+.group-links a[aria-current="page"] {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--background);
+    font-weight: 700;
+}
+    </style>
+</head>
+<body>
+    <header class="shell masthead">
+        <div class="trophy" aria-hidden="true">
+            <img src="{% static 'tournament/afcon-usa-logo.jpeg' %}" alt="">
+        </div>
+        <p class="brand">AFCON USA</p>
+        <h1>{% block page_heading %}Group standings{% endblock %}</h1>
+    </header>
+
+    <main class="shell">
+    <nav class="group-links" aria-label="Tournament pages">
+        <a href="{% url 'home' %}"
+        {% if request.resolver_match.url_name == "home" %}aria-current="page"{% endif %}>
+        Home
+    </a>
+        <a href="{% url 'fixtures' %}"
+           {% if request.resolver_match.url_name == "fixtures" %}aria-current="page"{% endif %}>
+            Fixtures &amp; Results
+        </a>
+        <a href="{% url 'standings' %}"
+           {% if request.resolver_match.url_name == "standings" %}aria-current="page"{% endif %}>
+            Standings
+        </a>
+        <a href="{% url 'player_stats' %}"
+           {% if request.resolver_match.url_name == "player_stats" %}aria-current="page"{% endif %}>
+            Player Stats
+        </a>
+        <a href="{% url 'teams' %}"
+           {% if request.resolver_match.url_name == "teams" %}aria-current="page"{% endif %}>
+            Teams
+        </a>
+    </nav>
+
+    {% block content %}
+            {% if tables|length > 1 %}
+                <nav class="group-links" aria-label="Jump to group">
+                    {% for table in tables %}
+                        <a href="#group-{{ forloop.counter }}">{{ table.name }}</a>
+                    {% endfor %}
+                </nav>
+            {% endif %}
+
+            {% for table in tables %}
+                <section class="group">
+                    <h2 id="group-{{ forloop.counter }}">{{ table.name }}</h2>
+
+                    {% if table.rows %}
+                        <div class="table-wrap" tabindex="0" role="region"
+                             aria-labelledby="group-{{ forloop.counter }}">
+                            <table aria-labelledby="group-{{ forloop.counter }}">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="team-column">Team</th>
+                                        <th scope="col" aria-label="Played">P</th>
+                                        <th scope="col" aria-label="Wins">W</th>
+                                        <th scope="col" aria-label="Draws">D</th>
+                                        <th scope="col" aria-label="Losses">L</th>
+                                        <th scope="col" aria-label="Goal difference">GD</th>
+                                        <th scope="col" aria-label="Points">Pts</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in table.rows %}
+                                        <tr>
+                                            <th scope="row" class="team-column">
+                                                <span class="team-name">
+                                                    {% with team=row.team|lower|cut:"." %}
+                                                        <span class="flag" aria-hidden="true">
+                                                            {% if team == "dr congo" %}🇨🇩
+                                                            {% elif team == "ghana" %}🇬🇭
+                                                            {% elif team == "senegal" or team == "senegale" %}🇸🇳
+                                                            {% elif team == "south sudan" %}🇸🇸
+                                                            {% elif team == "sudan" %}🇸🇩
+                                                            {% elif team == "burundi" %}🇧🇮
+                                                            {% elif team == "kenya" %}🇰🇪
+                                                            {% endif %}
+                                                        </span>
+                                                    {% endwith %}
+                                                    <span>{{ row.team }}</span>
+                                                </span>
+                                            </th>
+                                            <td>{{ row.played }}</td>
+                                            <td>{{ row.wins }}</td>
+                                            <td>{{ row.draws }}</td>
+                                            <td>{{ row.losses }}</td>
+                                            <td>{{ row.gd }}</td>
+                                            <td class="points">{{ row.points }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="empty">Teams will appear once they’re assigned.</p>
+                    {% endif %}
+                </section>
+            {% empty %}
+                <p class="empty">Group standings will appear when the groups are announced.</p>
+            {% endfor %}
+
+            {% if tables %}
+                <p class="legend">P Played · W Wins · D Draws · L Losses · GD Goal difference · Pts Points</p>
+            {% endif %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="shell footer-links">
+            <a href="https://www.instagram.com/afcon.usa/">Instagram @afcon.usa</a>
+            <span>Facebook AFCON CUP</span>
+        </div>
+        <div class="pitch-corner pitch-corner--left" aria-hidden="true"></div>
+        <div class="pitch-corner pitch-corner--right" aria-hidden="true"></div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "tournament/standings.html" %}
+
+{% block title %}Player Stats | AFCON USA{% endblock %}
+{% block page_heading %}Player Stats{% endblock %}
+
+{% block content %}
+    {% for board in leaderboards %}
+        <section class="group">
+            <h2 id="leaderboard-{{ forloop.counter }}">{{ board.title }}</h2>
+
+            <div class="table-wrap">
+                <table aria-labelledby="leaderboard-{{ forloop.counter }}">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="team-column">Player</th>
+                            <th scope="col">Team</th>
+                            <th scope="col">{{ board.label }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in board.rows %}
+                            <tr>
+                                <th scope="row" class="team-column">{{ row.player_name }}</th>
+                                <td>{{ row.team_name }}</td>
+                                <td class="points">{{ row.total }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">No {{ board.label|lower }} recorded yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endfor %}
+{% endblock %}

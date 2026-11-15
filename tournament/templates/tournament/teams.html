@@ -1,0 +1,31 @@
+{% extends "tournament/standings.html" %}
+
+{% block title %}Teams | AFCON USA{% endblock %}
+{% block page_heading %}Teams{% endblock %}
+
+{% block content %}
+    <div class="table-wrap">
+        <table aria-label="Tournament teams">
+            <thead>
+                <tr>
+                    <th scope="col" class="team-column">Team</th>
+                    <th scope="col">Group</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in teams %}
+                    <tr>
+                        <th scope="row" class="team-column">
+                            <a href="{% url 'team_detail' team.pk %}" style="color: var(--cream);">
+                                {{ team.name }}
+                            </a>
+                        </th>
+                        <td>{{ team.group.name|default:"To be announced" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="2">Teams will appear here once added.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

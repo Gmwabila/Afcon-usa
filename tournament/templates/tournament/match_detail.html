@@ -1,0 +1,56 @@
+{% extends "tournament/standings.html" %}
+
+{% block title %}{{ match }} | AFCON USA{% endblock %}
+{% block page_heading %}Match details{% endblock %}
+
+{% block content %}
+    <section class="group">
+        <h2>
+            <a href="{% url 'team_detail' match.home_team_id %}" style="color: var(--cream);">
+                {{ match.home_team }}
+            </a>
+            {% if is_final %}
+                <span style="color: var(--gold);">{{ match.home_score }}–{{ match.away_score }}</span>
+            {% else %}
+                vs
+            {% endif %}
+            <a href="{% url 'team_detail' match.away_team_id %}" style="color: var(--cream);">
+                {{ match.away_team }}
+            </a>
+        </h2>
+
+        <p class="legend">
+            {% if is_final %}Final result{% else %}Scheduled fixture{% endif %}
+            · {{ match.kickoff|date:"M j, Y · g:i A T" }}
+            · {{ match.venue }}
+        </p>
+    </section>
+
+    {% if is_final %}
+        <section class="group">
+            <h2 id="match-goals">Goals &amp; assists</h2>
+            <div class="table-wrap">
+                <table aria-labelledby="match-goals">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="team-column">Scorer</th>
+                            <th scope="col">Team</th>
+                            <th scope="col">Assist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for goal in goals %}
+                            <tr>
+                                <th scope="row" class="team-column">{{ goal.scorer.name }}</th>
+                                <td>{{ goal.scorer.team.name }}</td>
+                                <td>{{ goal.assister.name|default:"—" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="3">No goal details recorded yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

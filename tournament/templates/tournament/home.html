@@ -1,0 +1,14 @@
+{% extends "tournament/fixtures.html" %}
+
+{% block title %}AFCON USA | Tournament Home{% endblock %}
+{% block page_heading %}Rep your flag.<br>Play for your people.{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <p style="margin-top: 1.25rem;">
+        <a href="{% url 'fixtures' %}" style="color: var(--gold);">
+            View all fixtures and results
+        </a>
+    </p>
+{% endblock %}
