@@ -153,10 +153,11 @@
         }
 
         .team-name {
-            display: flex;
-            align-items: center;
-            gap: clamp(.35rem, 1.4vw, .85rem);
-        }
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+}
 
         .flag {
             flex: 0 0 auto;
@@ -300,16 +301,15 @@
                                     {% for row in table.rows %}
                                         <tr>
                                             <th scope="row" class="team-column">
-                                                <span class="team-name">
-                                                    {% with flag=row.team|country_flag %}
-                                                            {% if flag %}
-                                                                <span class="flag" aria-hidden="true">{{ flag }}</span>
-                                                            {% endif %}
-                                                        {% endwith %}
-                                                        </span>
-                                                    <span>{{ row.team }}</span>
-                                                </span>
-                                            </th>
+    <span class="team-name">
+        {% with flag=row.team|country_flag %}
+            {% if flag %}
+                <span class="flag" aria-hidden="true">{{ flag }}</span>
+            {% endif %}
+        {% endwith %}
+        <span>{{ row.team }}</span>
+    </span>
+</th>
                                             <td>{{ row.played }}</td>
                                             <td>{{ row.wins }}</td>
                                             <td>{{ row.draws }}</td>
